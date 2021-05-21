@@ -1,0 +1,8 @@
+*.txt
+*.json
+*.yaml
+*.pdf
+*.gv
+examples
+dist
+poetry.lock

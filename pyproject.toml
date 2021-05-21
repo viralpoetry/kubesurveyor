@@ -1,0 +1,35 @@
+[tool.poetry]
+name = "kubesurveyor"
+version = "1.0.0"
+description = "Good enough Kubernetes namespace visualization tool"
+authors = ["Peter Gasper <peter@gasper.cc>"]
+license = "MIT"
+readme = "README.md"
+homepage = "https://github.com/viralpoetry/kubesurveyor"
+repository = "https://github.com/viralpoetry/kubesurveyor"
+keywords = ["kubernetes", "graphviz", "visualisation"]
+include = [
+    "LICENSE",
+]
+classifiers = [
+    "Intended Audience :: System Administrators",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX :: Linux",
+    "Programming Language :: Python :: 3",
+    "Topic :: Scientific/Engineering :: Visualization",
+]
+
+[tool.poetry.dependencies]
+python = "^3.8"
+PyYAML = "^5.4.1"
+graphviz = "^0.16"
+kubernetes = "^12.0.1"
+
+[tool.poetry.scripts]
+kubesurveyor = "kubesurveyor.main:parse_args"
+
+[tool.poetry.dev-dependencies]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
