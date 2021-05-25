@@ -200,7 +200,6 @@ def visualize():
                         dot_root.edge(
                             service_name,
                             container_name + existing_pods[pod],
-                            label=proto,
                         )
                 dot_pods.subgraph(dot_pod)
     # push the subgraphs to the dot_root
