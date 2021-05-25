@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kubesurveyor"
-version = "1.0.0"
+version = "1.0.1"
 description = "Good enough Kubernetes namespace visualization tool"
 authors = ["Peter Gasper <peter@gasper.cc>"]
 license = "MIT"
