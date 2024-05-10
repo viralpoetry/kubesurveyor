@@ -4,14 +4,15 @@ __author__ = "Peter Gasper"
 __version__ = "1.0.1"
 __license__ = "MIT"
 
-import os
-import sys
-import yaml
 import argparse
+import sys
+from typing import Any, Dict, TextIO
+
+import yaml
 from graphviz import Digraph
 from kubernetes import client, config
 
-ns = {
+ns: Dict[str, Any] = {
     "namespace": "",
     "version": __version__,  # program version
     "ingress": {},  # fqdn to service mapping
@@ -20,7 +21,7 @@ ns = {
 }
 
 
-def get_pods(client, namespace):
+def get_pods(client: Any, namespace: str) -> None:
     # name, ports
     v1 = client.CoreV1Api()
     ret = v1.list_namespaced_pod(namespace=namespace)
@@ -63,7 +64,7 @@ def get_pods(client, namespace):
             ns["pod"][pod_name][container[0]] = container[1]
 
 
-def get_services(client, namespace):
+def get_services(client: Any, namespace: str) -> None:
     v1 = client.CoreV1Api()
     ret = v1.list_namespaced_service(namespace=namespace)
     for service in ret.items:
@@ -86,7 +87,7 @@ def get_services(client, namespace):
         ns["service"][service.metadata.name]["selector"] = selector
 
 
-def get_ingresses(client, namespace):
+def get_ingresses(client: Any, namespace: str) -> None:
     v1betaExt = client.ExtensionsV1beta1Api()
     ret = v1betaExt.list_namespaced_ingress(namespace=namespace)
     for ingress in ret.items:
@@ -103,14 +104,14 @@ def get_ingresses(client, namespace):
                     ns["ingress"][ingress.metadata.name][rule["host"]][k] = rule[k]
 
 
-def visualize():
+def visualize() -> Digraph:
     dot_root = Digraph(
         name="Kubernetes Namespace visualisation",
         comment="namespace view",
         strict="true",
     )
     # graph attributes
-    dot_root.graph_attr["label"] = ns["namespace"] + " namespace"
+    dot_root.graph_attr["label"] = str(ns["namespace"]) + " namespace"
     # dot_root.graph_attr["pad"] = "1"
     dot_root.graph_attr["rankdir"] = "LR"
     dot_root.graph_attr["ranksep"] = "5.2 equally"
@@ -209,25 +210,25 @@ def visualize():
     return dot_root
 
 
-def ns_to_yaml():
+def ns_to_yaml() -> None:
     """Dump namespace dictionary in YAML format."""
     print(yaml.dump(ns, default_flow_style=False), file=sys.stdout)
 
 
-def yaml_to_ns(input_file):
+def yaml_to_ns(input_file: TextIO) -> None:
     """Load YAML from file to a global variable."""
     global ns
-    ns = yaml.load(input_file, Loader=yaml.BaseLoader)
+    ns = yaml.safe_load(input_file, Loader=yaml.BaseLoader)
 
 
-def get_all(client, namespace):
+def get_all(client: Any, namespace: str) -> None:
     # TODO check if namespace is available with the current context
     get_services(client, namespace)
     get_pods(client, namespace)
     get_ingresses(client, namespace)
 
 
-def main(args):
+def main(args: Any) -> None:
     # https://github.com/kubernetes-client/python/issues/1131#issuecomment-749452174
     if args.context:
         try:
@@ -279,7 +280,7 @@ def main(args):
             viz_dot.render(filename=namespace)
 
 
-def parse_args():
+def parse_args() -> None:
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
         description="""\
