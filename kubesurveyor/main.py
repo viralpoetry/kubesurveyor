@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 __author__ = "Peter Gasper"
-__version__ = "1.0.1"
+__version__ = "1.0.2"
 __license__ = "MIT"
 
 import argparse
@@ -88,8 +88,7 @@ def get_services(client: Any, namespace: str) -> None:
 
 
 def get_ingresses(client: Any, namespace: str) -> None:
-    v1betaExt = client.ExtensionsV1beta1Api()
-    ret = v1betaExt.list_namespaced_ingress(namespace=namespace)
+    ret = client.NetworkingV1Api().list_namespaced_ingress(namespace=namespace)
     for ingress in ret.items:
         ns["ingress"][ingress.metadata.name] = {}
         for rule in ingress.spec.rules:  # list
@@ -155,7 +154,7 @@ def visualize() -> Digraph:
                 # get associated rules
                 for rule in ns["ingress"][i][host][proto]:
                     for path in ns["ingress"][i][host][proto][rule]:
-                        service_name = path["backend"]["service_name"]
+                        service_name = path["backend"]["service"]["name"]
                         # put service to dot
                         dot_service.node(service_name)
                         # edge between the ingress and the service
@@ -218,7 +217,7 @@ def ns_to_yaml() -> None:
 def yaml_to_ns(input_file: TextIO) -> None:
     """Load YAML from file to a global variable."""
     global ns
-    ns = yaml.safe_load(input_file, Loader=yaml.BaseLoader)
+    ns = yaml.safe_load(input_file)
 
 
 def get_all(client: Any, namespace: str) -> None:
