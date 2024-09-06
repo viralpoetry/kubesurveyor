@@ -368,7 +368,8 @@ def yaml_to_ns(input_file: TextIO) -> None:
     ns = yaml.safe_load(input_file)
 
 
-def main(args: Any) -> None:
+def main() -> None:
+    args = parse_args()
     # https://github.com/kubernetes-client/python/issues/1131#issuecomment-749452174
     if args.context:
         try:
@@ -428,8 +429,9 @@ def main(args: Any) -> None:
 def parse_args() -> Any:
     parser = argparse.ArgumentParser(
         formatter_class=argparse.RawDescriptionHelpFormatter,
-        description="""\
+        description=f"""\
         Kubesurveyor: Good enough Kubernetes namespace visualization tool.
+        Version: {__version__}
 
         Examples:
             # Show '<namespace>' namespace as a 'dot' language graph, using currently active K8S config context
@@ -507,5 +509,4 @@ def parse_args() -> Any:
 
 
 if __name__ == "__main__":
-    args = parse_args()
-    main(args)
+    main()
